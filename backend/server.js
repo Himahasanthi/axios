@@ -19,8 +19,13 @@ const authRoutes = require("./routes/authRoutes");
 // Load environment variables
 dotenv.config();
 
-// Connect to MongoDB
-connectDB(process.env.MONGO_URI);
+// ✅ Connect to MongoDB (with error handling)
+connectDB(process.env.MONGO_URI)
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => {
+    console.error("❌ MongoDB Connection Error:", err);
+    process.exit(1); // Exit process if MongoDB fails to connect
+  });
 
 // Initialize Express App
 const app = express();
@@ -61,7 +66,7 @@ app.get("/api/health", (req, res) => {
   res.json({ message: "API is working!" });
 });
 
-// ✅ Start the Server
+// ✅ Start the Server (Render-compatible)
 const PORT = process.env.PORT || 8000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
